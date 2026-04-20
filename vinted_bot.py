@@ -256,9 +256,12 @@ class VintedModal(discord.ui.Modal, title="Vinted Mail Versturen"):
 
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True, thinking=True)
+        print(f"[/vinted] on_submit aangeroepen door {interaction.user}")
         try:
             html = build_vinted_html(self.seller.value.strip(), self.buyer.value.strip(), self.product.value.strip())
+            print(f"[/vinted] mail sturen naar {self.recipient_email.value.strip()}")
             await send_email(self.recipient_email.value.strip(), "You've sold an item on Vinted", html)
+            print(f"[/vinted] mail verstuurd!")
             embed = discord.Embed(title="✅ Mail verstuurd!", color=0x007782)
             embed.add_field(name="Naar",     value=self.recipient_email.value.strip(), inline=False)
             embed.add_field(name="Verkoper", value=self.seller.value.strip(),          inline=True)
