@@ -16,7 +16,7 @@ DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
 SMTP_USER     = os.environ.get("SMTP_USER")
 SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
 SMTP_HOST     = "send.one.com"
-SMTP_PORT     = 465
+SMTP_PORT     = 587
 # ─────────────────────────────────────────────────────────────────────────────
 
 intents = discord.Intents.default()
@@ -237,8 +237,8 @@ def send_sync(to_address, subject, html, attachment_data=None, attachment_name=N
         encoders.encode_base64(part)
         part.add_header("Content-Disposition", f'attachment; filename="{attachment_name}"')
         msg.attach(part)
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, context=context) as server:
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
+        server.starttls(context=ssl.create_default_context())
         server.login(SMTP_USER, SMTP_PASSWORD)
         server.sendmail(SMTP_USER, to_address, msg.as_string())
 
